@@ -1,0 +1,19 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "pvalue_metric"
+author = "Niusha"
+classifiers = ["Programming Language :: Python :: 3"]
+description-file="README.md"
+
+requires = [
+    'numpy',
+    'pandas',
+    'pathlib',
+    'scipy',
+    'matplotlib',
+]
+
+requires-python=">=3.9"
