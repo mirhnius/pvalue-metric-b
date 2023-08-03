@@ -18,7 +18,6 @@ def get_data(path:Path, target_column: str, target_groups:list) -> tuple:
 def bootstrapped_cohorts(data:list, n:int=1000) -> list:
     
     cohort_list = []
-   
     for group in data:
         bootstrapped = np.zeros((n,len(group)))
         for i in range(n):
@@ -39,7 +38,7 @@ def permutated_cohorts(data:tuple, n:int=1000) -> list:
         permuted_cohorts.append(np.zeros((n, length)))
 
     for i in range(n):
-           permuted = np.random.permutation(merged_data, len(merged_data), replace=False)
+           permuted = np.random.permutation(merged_data)
            for (j, length) in enumerate(lengths):
                permuted_cohorts[j][i] = permuted[:length]
                permuted = permuted[length:]
