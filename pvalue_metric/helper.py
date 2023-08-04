@@ -27,7 +27,6 @@ def bootstrapped_cohorts(data:list, n:int=1000) -> list:
 
     return cohort_list
 
-
 def permutated_cohorts(data:tuple, n:int=1000) -> list:
 
     lengths = [len(group) for group in data]

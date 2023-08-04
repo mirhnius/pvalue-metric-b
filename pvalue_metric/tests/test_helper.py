@@ -1,13 +1,21 @@
+import sys
 import unittest
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from pathlib import Path
-from pvalue_metric.helper import get_data, permutated_cohorts, bootstrapped_cohorts
 
+# Put the pvalue_metric directory on the Python path.
+PACKAGE_DIR = Path(__file__).parents[2]
+sys.path.append(str(PACKAGE_DIR))
+
+from pvalue_metric.helper import (bootstrapped_cohorts, get_data,
+                                  permutated_cohorts)
+
+Data_DIR = Path(PACKAGE_DIR / "study_files/roi_data.csv")
 
 class TestHelper(unittest.TestCase):
-
-    path = Path("../study_files/roi_data.csv")
+    path = Data_DIR
     df = pd.read_csv(path)
     target_column = "Left-Accumbens-area_change"
     target_groups = ["PD-non-MCI", "HC"]
