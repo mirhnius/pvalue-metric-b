@@ -2,8 +2,8 @@ import sys
 import unittest
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 # Put the pvalue_metric directory on the Python path.
 PACKAGE_DIR = Path(__file__).parents[2]
@@ -15,19 +15,29 @@ from pvalue_metric import metric
 class TestMetric(unittest.TestCase):
     
     def test_mean_euclidean_distance(self):
-        # pvalues = np.array([0.1, 0.2, 0.3, 0.4])
-        # self.assertEqual(metric.mean_euclidean_distance(pvalues), 0.125)
-        # pvalues = np.array([0.1, 0.2, 0.3, 0.4, 0.5])
-        # self.assertEqual(metric.mean_euclidean_distance(pvalues), 0.1)
-        # pvalues = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6])
-        # self.assertEqual(metric.mean_euclidean_distance(pvalues), 0.08333333333333333)
-        # pvalues = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7])
-        # self.assertEqual(metric.mean_euclidean_distance(pvalues), 0.07142857142857142)
-        # pvalues = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8])
-        # self.assertEqual(metric.mean_euclidean_distance(pvalues), 0.0625)
-        # pvalues = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
-        # self.assertEqual(metric.mean_euclidean_distance(pvalues), 0.05555555555555555)
-        # pvalues = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1])
-        # self.assertEqual(metric.mean_euclidean_distance(pvalues), 0.05)
-        # pvalues = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2])
-        # self.assertEqual(metric.mean_euclidean_distance(pvalues), 0.045454545454545456)
+        pvalues = np.array([0.3, 0.2, 0.1, 0.4])
+        psum = np.cumsum(np.sort(pvalues))/np.sum(pvalues)
+        uniform_CDF = np.cumsum(np.ones((len(pvalues)))) / len(pvalues)
+        power = np.power(psum - uniform_CDF, 2)
+        print("\npvalues: ", *pvalues)
+        print("psums: ", *psum)
+        print("uniform", *uniform_CDF)
+        print("euclidean_distance: ", *power)
+        
+        self.assertEqual(metric.mean_euclidean_distance(pvalues), np.mean(power))
+
+def plot_distance():
+    pvalues = np.array([0.3, 0.2, 0.1, 0.4])
+    psum = np.cumsum(np.sort(pvalues))/np.sum(pvalues)
+    uniform_CDF = np.cumsum(np.ones((len(pvalues)))) / len(pvalues)
+    plt.figure()
+    plt.plot(psum)
+    plt.plot(uniform_CDF)
+    plt.show()
+
+
+if __name__ == "__main__":
+    plot_distance()
+    unittest.main()
+
+    
