@@ -3,6 +3,7 @@ import unittest
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+from scipy import stats
 import numpy as np
 
 # Put the pvalue_metric directory on the Python path.
@@ -53,10 +54,24 @@ def plot_CDF_test():
     plt.plot([threshold_index] * len(CDF_delta), list(range(len(CDF_delta))), 'r--')
     plt.show()
 
+def pvalue_test_example():
+
+    G1 = np.random.normal(0, 1, 100)
+    G2 = np.random.normal(10, 1, 100)
+    data = (G1, G2)
+    outputs, original_delta = metric.pvalue_test(data, stats.ttest_ind, 500, 500)
+    p, delta_cdf, threshold_index = outputs
+    plt.plot(delta_cdf)
+    plt.plot([threshold_index] * 2, list(range(2)), 'r--')
+    plt.show()
+    print(p, original_delta, threshold_index)
+    print(*delta_cdf)
+
 
 if __name__ == "__main__":
-    plot_distance()
-    plot_CDF_test()
-    unittest.main()
+    pvalue_test_example()
+    # plot_distance()
+    # plot_CDF_test()
+    # unittest.main()
 
     

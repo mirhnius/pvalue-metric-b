@@ -14,9 +14,10 @@ def CDF_test(deltas, original_delta):
     sorted_deltas = np.sort(deltas)
     delta_CDF = np.cumsum(sorted_deltas) / np.sum(deltas)
     #add exception here or use scipy to find the index
-    threshold_index = np.ravel(np.where((sorted_deltas > original_delta) | (sorted_deltas == original_delta)))[0]
+    threshold__list =  np.ravel(np.where((sorted_deltas > original_delta) | (sorted_deltas == original_delta)))
+    threshold_index  = threshold__list[0] if len(threshold__list) > 0 else len(delta_CDF) - 1
 
-    return 1 - delta_CDF[threshold_index]
+    return 1 - delta_CDF[threshold_index], delta_CDF, threshold_index
 
 def pvalue_test(data, Hypothesis_testing_func, n_bootstrap, n_permutation, **kwargs):
 
@@ -41,17 +42,6 @@ def pvalue_test(data, Hypothesis_testing_func, n_bootstrap, n_permutation, **kwa
 
     original_mean_delta = mean_euclidean_distance(original_cohort_pvalues)
     
-    return CDF_test(mean_deltas, original_mean_delta)
+    return CDF_test(mean_deltas, original_mean_delta), original_mean_delta
 
-    # n1 = len(G1)
-    # n2 = len(G2)
-    # n = n1 + n2
-    # G = np.concatenate((G1, G2))
-    # delta = Hypothesis_testing_function(G, **kwargs)
-    # deltas = np.zeros((n_bootstrap,))
-    # for i in range(n_bootstrap):
-    #     G1_bootstrap = np.random.choice(G, n1, replace=True)
-    #     G2_bootstrap = np.random.choice(G, n2, replace=True)
-    #     deltas[i] = Hypothesis_testing_function(np.concatenate((G1_bootstrap, G2_bootstrap)), **kwargs)
-    
-    # return CDF_test(deltas, delta)
+   
