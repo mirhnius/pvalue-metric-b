@@ -1,4 +1,5 @@
 import itertools
+from typing import Union
 from pathlib import Path
 
 import numpy as np
@@ -8,9 +9,13 @@ subject_group = "dx_group"
 
 #you should make sure there is no empty cell in the target column
 
-def get_data(path:Path, target_column: str, target_groups:list) -> tuple:
+def get_data(file_name:Union[Path, pd.DataFrame], target_column: str, target_groups:list) -> tuple:
+    
+    if isinstance(file_name, Path):
+        df = pd.read_csv(file_name)
+    elif isinstance(file_name, pd.DataFrame):
+        df = file_name
 
-    df = pd.read_csv(path)
     data_list = []
     for group in target_groups:
         data_list.append(tuple(df[target_column].loc[df[subject_group] == group]))
