@@ -7,14 +7,16 @@ import numpy as np
 import pandas as pd
 
 # Put the analysis directory on the Python path.
-PARENT_DIR = Path(__file__).parents[1]
+PARENT_DIR = Path(__file__).resolve().parents[1]
 sys.path.append(str(PARENT_DIR))
 
 import main
 
-Data_DIR = PARENT_DIR.parent[1] / "study_files/roi_data.csv"
+Data_DIR = PARENT_DIR.parent / "study_files/roi_data.csv"
 
+pd.read_csv(Data_DIR)
 
+#change the test amd use simulation data
 class TestMain(unittest.TestCase):
     df = pd.read_csv(Data_DIR)
     target_groups = ["PD-non-MCI", "HC"]
@@ -25,7 +27,7 @@ class TestMain(unittest.TestCase):
     target_columns = ["thickness_change"] + [region+"_change_pred" for region in ROIs]
 
     def test_pvalue_test_for_all_volumes(self):
-        print(main.pvalue_test_for_all_volumes(Data_DIR, self.target_columns, self.target_groups, 100, 100))
+        print(main.pvalue_test_for_all_volumes(Data_DIR, self.target_columns, self.target_groups, stats.ttest_ind, 500, 500))
 
 if __name__ == "__main__":
     unittest.main()

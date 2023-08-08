@@ -5,12 +5,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-subject_group = "dx_group"
+subject_group = "dx_group" #REMOVE IT FROM HERE
 
 #you should make sure there is no empty cell in the target column
 
 def get_data(file_name:Union[Path, pd.DataFrame], target_column: str, target_groups:list) -> tuple:
-    
+
     if isinstance(file_name, Path):
         df = pd.read_csv(file_name)
     elif isinstance(file_name, pd.DataFrame):

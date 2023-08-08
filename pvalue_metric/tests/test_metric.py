@@ -7,7 +7,7 @@ from scipy import stats
 import numpy as np
 
 # Put the pvalue_metric directory on the Python path.
-PACKAGE_DIR = Path(__file__).parents[2]
+PACKAGE_DIR = Path(__file__).resolve().parents[2]
 sys.path.append(str(PACKAGE_DIR))
 
 from pvalue_metric import metric
@@ -70,8 +70,8 @@ def pvalue_test_example():
 
 if __name__ == "__main__":
     pvalue_test_example()
-    # plot_distance()
-    # plot_CDF_test()
-    # unittest.main()
+    plot_distance()
+    plot_CDF_test()
+    unittest.main()
 
     

@@ -17,7 +17,7 @@ def CDF_test(deltas, original_delta):
     threshold__list =  np.ravel(np.where((sorted_deltas > original_delta) | (sorted_deltas == original_delta)))
     threshold_index  = threshold__list[0] if len(threshold__list) > 0 else len(delta_CDF) - 1
 
-    return 1 - delta_CDF[threshold_index], delta_CDF, threshold_index
+    return delta_CDF[-1] - delta_CDF[threshold_index], delta_CDF, threshold_index
 
 def pvalue_test(data, Hypothesis_testing_func, n_bootstrap, n_permutation, **kwargs):
 

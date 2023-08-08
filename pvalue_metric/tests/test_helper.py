@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 # Put the pvalue_metric directory on the Python path.
-PACKAGE_DIR = Path(__file__).parents[2]
+PACKAGE_DIR = Path(__file__).resolve().parents[2]
 sys.path.append(str(PACKAGE_DIR))
 
 from pvalue_metric.helper import (bootstrapped_cohorts, get_data,
