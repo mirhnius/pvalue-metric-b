@@ -1,21 +1,50 @@
 import numpy as np
 from pvalue_metric import helper
 
-def mean_euclidean_distance(pvalues:np.array):
+def find_index_closest_smaller_sorted(array, threshold):
+    left = 0
+    right = len(array) - 1
+    closest_index = None
+
+    while left <= right:
+        mid = (left + right) // 2
+        if array[mid] < threshold:
+            closest_index = mid
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return closest_index
+
+def mean_euclidean_distance(pvalues:np.array, percision=0.0001):
+    try:
+        assert(len(np.unique(pvalues)) == len(pvalues))
+    except AssertionError:
+        print("pvalues assumed to be unique (because of the CDF is calculated")
+        raise
 
     n_bootstrap = len(pvalues)
-    uniform_CDF = np.cumsum(np.ones((len(pvalues)))) / n_bootstrap
-    p_CDF = np.cumsum(np.sort(pvalues)) / np.sum(pvalues)
+    uniform_CDF =  np.linspace(0, 1, int(1/percision))
+    p_CDF = np.arange(1, n_bootstrap+1) / n_bootstrap+1
+    sorted_pvalues = np.sort(pvalues)
+    
+    euclidean_distances = np.zeros((n_bootstrap,))
+    for (i,p) in enumerate(sorted_pvalues):
+        idx = find_index_closest_smaller_sorted(uniform_CDF, p)
+        euclidean_distances[i] = np.power(p_CDF[i] - uniform_CDF[idx], 2)
 
-    return np.mean(np.power(p_CDF - uniform_CDF, 2))
+    return np.mean(euclidean_distances)
+
 
 def CDF_test(deltas, original_delta):
     
+    n = len(deltas)
     sorted_deltas = np.sort(deltas)
-    delta_CDF = np.cumsum(sorted_deltas) / np.sum(deltas)
+    delta_CDF = np.arange(1,n+1) / n
+
     #add exception here or use scipy to find the index
     threshold__list =  np.ravel(np.where((sorted_deltas > original_delta) | (sorted_deltas == original_delta)))
-    threshold_index  = threshold__list[0] if len(threshold__list) > 0 else len(delta_CDF) - 1
+    threshold_index  = threshold__list[0] if len(threshold__list) > 0 else n - 1
 
     return delta_CDF[-1] - delta_CDF[threshold_index], delta_CDF, threshold_index
 

@@ -46,22 +46,24 @@ def generate_pairs_indices(data):
 
     return pairs_elements
 
-PARENT_DIR = Path(__file__).resolve().parents[1]
-Data_DIR = PARENT_DIR / "study_files/roi_data.csv"
+if __name__ == "__main__":
+ 
+    PARENT_DIR = Path(__file__).resolve().parents[1]
+    Data_DIR = PARENT_DIR / "study_files/roi_data.csv"
 
-df = pd.read_csv(Data_DIR)
-target_groups = ["PD-non-MCI", "HC"]
-subject_group = "dx_group"
-ROIs = [
-"Thalamus", "Caudate", "Putamen", "Pallidum",
-"Hippocampus", "Amygdala","Accumbens-area"]
-target_columns = ["thickness_change"] + [region+"_change_pred" for region in ROIs]
+    df = pd.read_csv(Data_DIR)
+    target_groups = ["PD-non-MCI", "HC"]
+    subject_group = "dx_group"
+    ROIs = [
+    "Thalamus", "Caudate", "Putamen", "Pallidum",
+    "Hippocampus", "Amygdala","Accumbens-area"]
+    target_columns = ["thickness_change"] + [region+"_change_pred" for region in ROIs]
 
-pairs = generate_pairs_indices(df[subject_group].unique())
-print(pairs)
-result = []
-for pair in pairs:
+    pairs = generate_pairs_indices(df[subject_group].unique())
+    print(pairs)
+    result = []
+    for pair in pairs:
 
-    result.append(pvalue_test_for_all_volumes(Data_DIR, target_columns, pair, stats.ttest_ind, 500, 500))
+        result.append(pvalue_test_for_all_volumes(Data_DIR, target_columns, pair, stats.ttest_ind, 500, 500))
 
-print(pd.concat(result, axis=1))
+    print(pd.concat(result, axis=1))
