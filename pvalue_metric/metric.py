@@ -1,22 +1,8 @@
 import numpy as np
 from pvalue_metric import helper
 
-def find_index_closest_smaller_sorted(array, threshold):
-    left = 0
-    right = len(array) - 1
-    closest_index = None
 
-    while left <= right:
-        mid = (left + right) // 2
-        if array[mid] < threshold:
-            closest_index = mid
-            left = mid + 1
-        else:
-            right = mid - 1
-
-    return closest_index
-
-def mean_euclidean_distance(pvalues:np.array, percision=0.0001):
+def mean_euclidean_distance(pvalues:np.array):
     try:
         assert(len(np.unique(pvalues)) == len(pvalues))
     except AssertionError:
@@ -24,14 +10,12 @@ def mean_euclidean_distance(pvalues:np.array, percision=0.0001):
         raise
 
     n_bootstrap = len(pvalues)
-    uniform_CDF =  np.linspace(0, 1, int(1/percision))
-    p_CDF = np.arange(1, n_bootstrap+1) / n_bootstrap+1
+    p_CDF = np.arange(1, n_bootstrap+1) / n_bootstrap+1 #CDF function for  bootstrap pvalues
     sorted_pvalues = np.sort(pvalues)
     
     euclidean_distances = np.zeros((n_bootstrap,))
     for (i,p) in enumerate(sorted_pvalues):
-        idx = find_index_closest_smaller_sorted(uniform_CDF, p)
-        euclidean_distances[i] = np.power(p_CDF[i] - uniform_CDF[idx], 2)
+        euclidean_distances[i] = np.power(p_CDF[i] - p, 2)  # for uniform  F(p) = p
 
     return np.mean(euclidean_distances)
 
