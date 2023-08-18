@@ -64,6 +64,10 @@ if __name__ == "__main__":
     result = []
     for pair in pairs:
 
-        result.append(pvalue_test_for_all_volumes(Data_DIR, target_columns, pair, stats.ttest_ind, 500, 500))
+        result.append(pvalue_test_for_all_volumes(Data_DIR, target_columns, pair, stats.ttest_ind, 1000, 1000))
 
-    print(pd.concat(result, axis=1))
+    all_result = pd.concat(result, axis=1)
+    print(all_result)
+    all_result.to_csv("pvalue_metric_1000bootstrap_1000permutation.csv",
+                      header=True, index=True)
+    
