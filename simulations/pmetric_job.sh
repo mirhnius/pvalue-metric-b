@@ -24,9 +24,7 @@ then
 fi
 
 # line_number=$(echo "$SGE_TASK_ID + 1" | bc)
-
-INPUTFILE="$PARENT_DIR/filenames.txt"
-line=$(cut -f $SGE_TASK_ID -d $'\n' $INPUTFILE)
+# line=$(cut -f $SGE_TASK_ID -d $'\n' $INPUTFILE)
 
 DESTINATION_DIR="${PARENT_DIR}/test-$SGE_TASK_ID" #change this to the name of the folder you want to save the outputs in
 
@@ -43,11 +41,11 @@ export SGE_TASK_ID
 export line
 
 
-singularity exec --bind ${home_dir}/code/pmetric:/mnt/code \
+singularity exec -e --bind ${home_dir}/code/pmetric:/mnt/code \
 --bind ${home_dir}/pmetric_input:/mnt/input:ro \
 --bind ${home_dir}/pemetric_outputs:/mnt/out \
 ${home_dir}/pmetric_python.sif \
-python /mnt/code/${script}
+python /mnt/code/${script} $INPUTFILENAME $TASK_ID
 
 # normal_simulation_different_effectsize_samplesize.py 
 
