@@ -5,15 +5,17 @@ from pathlib import Path
 from scipy import stats
 from simulation_helper import simulation
 
-TASK_ID = int(os.environ.get('TASK_ID'))
-INPUTFILENAME = os.environ.get('INPUTFILENAME')
+# TASK_ID = int(os.environ.get('TASK_ID'))
+# INPUTFILENAME = os.environ.get('INPUTFILENAME')
 cwd = Path(__file__).parent.absolute()
 
+TASK_ID = 1
+INPUTFILENAME = "simulation_combinations.csv"
 
 pmetrics = np.zeros(1000)
 pvalues = np.zeros(1000)
 combinations_df = pd.read_csv(cwd / INPUTFILENAME, header=0, index_col=0)
-for i in range(1000):
+for i in range(1):
 
     combination = combinations_df.iloc[TASK_ID]
     func1_args = {'loc': 0, 'scale': 1, 'size': combination['size']}

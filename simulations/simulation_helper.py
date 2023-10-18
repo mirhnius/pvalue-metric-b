@@ -1,9 +1,17 @@
+import sys
 import numpy as np
 import pandas as pd
 from pathlib import Path
 from itertools import product
-from pvalue_metric import metric
 
+
+PACKAGE_DIR = Path(__file__).resolve().parents[1] / 'pvalue_metric'
+sys.path.append(str(PACKAGE_DIR))
+print(Path(__file__).resolve())
+print(PACKAGE_DIR)
+
+# from pvalue_metric import metric
+import metric
 
 def simulation(test_func, generator1, generator2, n_bootstrap, n_permutation, func1_args={}, func2_args={}, **kwargs):
     
