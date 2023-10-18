@@ -14,16 +14,21 @@ INPUTFILENAME = "simulation_combinations.csv"
 
 pmetrics = np.zeros(1000)
 pvalues = np.zeros(1000)
+
 combinations_df = pd.read_csv(cwd / INPUTFILENAME, header=0, index_col=0)
+combinations_df.astype({'size': 'int64', 'n_bootstrap': 'int64', 'n_permutation': 'int64'}, copy=False)
+
+
 for i in range(1):
 
-    combination = combinations_df.iloc[TASK_ID]
-    func1_args = {'loc': 0, 'scale': 1, 'size': combination['size']}
-    func2_args = {'loc': combination['location'], \
-                   'scale': combination['scale'], 'size': combination['size']}
+    combination = combinations_df.loc[TASK_ID] # it doesnt work with correct types
+
+    func1_args = {'loc': 0, 'scale': 1, 'size': combinations_df['size'][TASK_ID]}
+    func2_args = {'loc':  combinations_df['locations'][TASK_ID], \
+                   'scale': combination['scale'], 'size': combinations_df['size'][TASK_ID]}
     
     simulation_result = simulation(stats.ttest_ind, np.random.normal, np.random.normal, 
-                        combination['n_bootstrap'], combination['n_permutation'],
+                        combinations_df['n_bootstrap'][TASK_ID], combinations_df['n_permutation'][TASK_ID],
                         func1_args, func2_args)
     pmetrics[i] = simulation_result['p_metric']
     pvalues[i] = simulation_result['pvalue']

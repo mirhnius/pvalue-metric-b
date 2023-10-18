@@ -7,8 +7,7 @@ from itertools import product
 
 PACKAGE_DIR = Path(__file__).resolve().parents[1] / 'pvalue_metric'
 sys.path.append(str(PACKAGE_DIR))
-print(Path(__file__).resolve())
-print(PACKAGE_DIR)
+
 
 # from pvalue_metric import metric
 import metric
