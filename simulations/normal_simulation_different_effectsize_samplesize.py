@@ -1,28 +1,30 @@
-import os
+import sys
 import numpy as np
 import pandas as pd
 from pathlib import Path
 from scipy import stats
 from simulation_helper import simulation
 
-TASK_ID = int(os.environ.get('TASK_ID'))
-INPUTFILENAME = os.environ.get('INPUTFILENAME')
+TASK_ID = int(sys.argv[1]) - 1
+INPUTFILENAME =  sys.argv[2]
 
 cwd = Path(__file__).parent.absolute()
-output_dir = Path("/mnt/output/results")
-output_dir.mkdir(parents=True, exist_ok=True)
+output_dir = Path("/mnt/output")
+# output_dir.mkdir(parents=True, exist_ok=True)
 
 # TASK_ID = 1
 # INPUTFILENAME = "simulation_combinations.csv"
 
-pmetrics = np.zeros(1000)
-pvalues = np.zeros(1000)
+size = 20
+
+pmetrics = np.zeros(size)
+pvalues = np.zeros(size)
 
 combinations_df = pd.read_csv(cwd / INPUTFILENAME, header=0, index_col=0)
 combinations_df.astype({'size': 'int64', 'n_bootstrap': 'int64', 'n_permutation': 'int64'}, copy=False)
 
 
-for i in range(1):
+for i in range(size):
 
     combination = combinations_df.loc[TASK_ID] # it doesnt work with correct data types
 
