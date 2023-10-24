@@ -3,4 +3,5 @@ __pycache__
 outputs
 .cache
 livingpark_utils-ppmiDownloader.log
+simulations/dummies.sh
 
