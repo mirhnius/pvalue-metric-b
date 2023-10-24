@@ -8,6 +8,7 @@ from itertools import combinations
 
 group_column = "dx_group" ##REMOVE IT FROM HERE there are copies in helper.py and main.py
 # Hypothesis_test:callable=stats.ttest_ind,
+
 def pvalue_test_for_all_volumes(path:Path,
                         regions:list,
                         groups:list,
@@ -15,6 +16,23 @@ def pvalue_test_for_all_volumes(path:Path,
                         n_bootstrap:int,
                         n_permutation:int,
                         **kwargs) -> pd.DataFrame:
+    
+    """
+    This function is  calculate p disparity metric for all volumes in Sokolowski et al. 2023 paper
+
+    Inputs:
+        path: path to the csv file or pandas dataframe
+        regions: list of brian regions that we are intrerested in
+        groups: list of target groups that we are intrerested in 
+        (there is three groups in the paper: PD-MCI, PD-non-MCI, HC)
+        Hypothesis_test_func: Hypothesis testing function
+        n_bootstrap: number of bootstrap iteration
+        n_permutation: number of permutation iterations
+        **kwargs: keyword arguments for the Hypothesis testing function
+
+    Output:
+        pandas dataframe of p disparity metric for all volumes
+    """
 
     try:
         assert len(groups) == 2
@@ -39,7 +57,15 @@ def pvalue_test_for_all_volumes(path:Path,
     return pd.Series(results, index=regions, name= groups[0] + "_vs_" + groups[1])    #maybe change name  
 
 def generate_pairs_indices(data):
-
+    """
+    This function generates all possible pairs of indices for a given list
+    
+    Inputs:
+        data: list of data
+    
+    Output:
+        pairs_elements: list of all possible pairs of indices
+    """
     pairs_elements = []
     for i, j in combinations(data, 2):
         pairs_elements.append((i, j))
