@@ -22,7 +22,7 @@ def mean_euclidean_distance(pvalues:np.array):
         raise
 
     n_bootstrap = len(pvalues)
-    p_CDF = np.arange(1, n_bootstrap+1) / n_bootstrap+1 #CDF function for  bootstrap pvalues
+    p_CDF = np.arange(1, n_bootstrap+1) / n_bootstrap #CDF function for  bootstrap pvalues
     sorted_pvalues = np.sort(pvalues)
     
     euclidean_distances = np.zeros((n_bootstrap,))
@@ -57,6 +57,17 @@ def CDF_test(deltas, original_delta):
 
     return delta_CDF[-1] - delta_CDF[threshold_index], delta_CDF, threshold_index
 
+def original_cohort_properties(data, Hypothesis_testing_func, n_bootstrap, **kwargs):
+
+    original_cohort_G1_bootstrapes, original_cohort_G2_bootstrapes = \
+        helper.bootstrapped_cohorts(data, n_bootstrap)
+     
+    original_cohort_pvalues = [Hypothesis_testing_func(original_cohort_G1_bootstrapes[i],\
+                                original_cohort_G2_bootstrapes[i], **kwargs)[1] for i in range(n_bootstrap)]
+
+    original_mean_delta = mean_euclidean_distance(original_cohort_pvalues)
+
+    return original_mean_delta, original_cohort_pvalues
 
 #should change the name of mean_delta and might add a function for original delta calculation
 def pvalue_test(data, Hypothesis_testing_func, n_bootstrap, n_permutation, **kwargs):
@@ -93,14 +104,9 @@ def pvalue_test(data, Hypothesis_testing_func, n_bootstrap, n_permutation, **kwa
                                                 G2_bootstraps[bootstrap_itr], **kwargs)[1]
 
         mean_deltas[permutation_itr] = mean_euclidean_distance(p_values)
-
-    original_cohort_G1_bootstrapes, original_cohort_G2_bootstrapes = \
-        helper.bootstrapped_cohorts(data, n_bootstrap)
-     
-    original_cohort_pvalues = [Hypothesis_testing_func(original_cohort_G1_bootstrapes[i],\
-                                original_cohort_G2_bootstrapes[i], **kwargs)[1] for i in range(n_bootstrap)]
-
-    original_mean_delta = mean_euclidean_distance(original_cohort_pvalues)
+    
+    original_mean_delta, *_ = original_cohort_properties(data, Hypothesis_testing_func,\
+                                n_bootstrap, **kwargs)
     
     return CDF_test(mean_deltas, original_mean_delta), original_mean_delta
 
