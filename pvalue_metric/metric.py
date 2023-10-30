@@ -2,6 +2,9 @@ import numpy as np
 # from pvalue_metric import helper
 import helper
 
+NonePath = type('NonePath', (), {'resolve': lambda: None})
+
+
 def mean_euclidean_distance(pvalues:np.array):
     """
     This function calculates the mean euclidean distance between the CDF of the generated pvalues and
@@ -57,20 +60,22 @@ def CDF_test(deltas, original_delta):
 
     return delta_CDF[-1] - delta_CDF[threshold_index], delta_CDF, threshold_index
 
+
 def original_cohort_properties(data, Hypothesis_testing_func, n_bootstrap, **kwargs):
 
     original_cohort_G1_bootstrapes, original_cohort_G2_bootstrapes = \
         helper.bootstrapped_cohorts(data, n_bootstrap)
      
-    original_cohort_pvalues = [Hypothesis_testing_func(original_cohort_G1_bootstrapes[i],\
+    original_cohort_bootstrap_pvalues = [Hypothesis_testing_func(original_cohort_G1_bootstrapes[i],\
                                 original_cohort_G2_bootstrapes[i], **kwargs)[1] for i in range(n_bootstrap)]
 
-    original_mean_delta = mean_euclidean_distance(original_cohort_pvalues)
+    original_delta = mean_euclidean_distance(original_cohort_bootstrap_pvalues)
 
-    return original_mean_delta, original_cohort_pvalues
+    return original_delta, original_cohort_bootstrap_pvalues
+
 
 #should change the name of mean_delta and might add a function for original delta calculation
-def pvalue_test(data, Hypothesis_testing_func, n_bootstrap, n_permutation, **kwargs):
+def pvalue_test(data, Hypothesis_testing_func, n_bootstrap, n_permutation, path=NonePath, name=None, **kwargs):
     """
     This function calculate pmetric for a given data (two set of groups)
     and Hypothesis testing function
@@ -93,6 +98,7 @@ def pvalue_test(data, Hypothesis_testing_func, n_bootstrap, n_permutation, **kwa
     G1_permutations, G2_permutations = helper.permutated_cohorts(data, n_permutation)
 
     mean_deltas = np.zeros((n_permutation,))
+    all_bootstrapes = np.zeros((n_permutation, n_bootstrap))
     for permutation_itr in range(n_permutation):
 
         G1_bootstraps, G2_bootstraps = helper.bootstrapped_cohorts([G1_permutations[permutation_itr], G2_permutations[permutation_itr]],
@@ -102,12 +108,16 @@ def pvalue_test(data, Hypothesis_testing_func, n_bootstrap, n_permutation, **kwa
         for bootstrap_itr in range(n_bootstrap):
             p_values[bootstrap_itr] = Hypothesis_testing_func(G1_bootstraps[bootstrap_itr],\
                                                 G2_bootstraps[bootstrap_itr], **kwargs)[1]
-
+        
         mean_deltas[permutation_itr] = mean_euclidean_distance(p_values)
-    
-    original_mean_delta, *_ = original_cohort_properties(data, Hypothesis_testing_func,\
-                                n_bootstrap, **kwargs)
-    
+        all_bootstrapes[permutation_itr] = p_values[bootstrap_itr]
+
+    original_mean_delta, original_cohort_pvalues = original_cohort_properties(data, \
+                                    Hypothesis_testing_func, n_bootstrap, **kwargs)
+    if path.resolve() != None:
+        np.savetxt(path / f"permeuted_cohorts_pvalues_{name}.txt", all_bootstrapes)
+        np.savetxt(path / f"original_cohort_pvalues_{name}.txt", original_cohort_pvalues)
+      
     return CDF_test(mean_deltas, original_mean_delta), original_mean_delta
 
    
