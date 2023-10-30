@@ -10,7 +10,7 @@ INPUTFILENAME =  sys.argv[2]
 
 cwd = Path(__file__).parent.absolute()
 output_dir = Path("/mnt/output")
-# output_dir.mkdir(parents=True, exist_ok=True)
+output_dir.mkdir(parents=True, exist_ok=True)
 
 # TASK_ID = 1
 # INPUTFILENAME = "simulation_combinations.csv"
